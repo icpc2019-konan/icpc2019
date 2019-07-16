@@ -36,9 +36,11 @@ pm,1 pm,2 … pm,n
 0 0  
 
 ### Output for the Sample Input
+```
 105  
 83  
 0  
+```
 
 ## 方針  
 
@@ -124,6 +126,7 @@ s
 各データセットについて，与えられた文字列を与えられたスクリーンキーボードで入力するのに必要な最小ボタン押下回数を表す整数ひとつをもつ行を出力せよ．
 
 ### Sample Input　（2番目例の一部がマークアップ表示だと水平線表示になるので注意）
+```
 3 9  
 ABCDEFGHI  
 JKLMNOPQR  
@@ -143,6 +146,7 @@ AaSsDdFfGgHhJjKkLl;_:
 ZzXxCcVvBbNnMm,_._/__  
 ICPC2019,AsiaYokohamaRegional,QualificationRound  
 0 0  
+```
 
 ### Output for the Sample Input
 28  
