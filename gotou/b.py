@@ -16,5 +16,5 @@ while True:
     for t in target:
         next = d[t]
         ans += abs(now[0]-next[0]) + abs(now[1]-next[1])
-        now=next
+        now = next
     print(ans + len(target))

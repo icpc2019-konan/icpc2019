@@ -1,6 +1,4 @@
-### [
-
-### A問題：期末試験の成績](https://onlinejudge.u-aizu.ac.jp/challenges/sources/ICPC/Prelim/1632)
+### [A問題：期末試験の成績](http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1632)
 
 問題文をぐっと眺めると、入力は以下のような構成になっていることが分かります。（1つ目のサンプルケース）
 
@@ -53,7 +51,7 @@ for(int i=0;i<n;i++){
 }
 ~~~
 
-とすれば**横向き**に、![Untitled Diagram-30](/Users/gotoutakumi/Desktop/git/icpc2019/gotou/images/Untitled Diagram-30.png)
+とすれば**横向き**に、![Untitled Diagram-30](./images/Untitled Diagram-30.png)
 
 ~~~cpp
 for(int j=0;j<m;j++){
@@ -63,7 +61,7 @@ for(int j=0;j<m;j++){
 }
 ~~~
 
-とすれば**縦向き**に配列を処理できます。![Untitled Diagram-31](/Users/gotoutakumi/Desktop/git/icpc2019/gotou/images/Untitled Diagram-31.png)
+とすれば**縦向き**に配列を処理できます。![Untitled Diagram-31](./images/Untitled Diagram-31.png)
 
 ##### 1次元配列による実装
 
@@ -94,6 +92,26 @@ int main(){
 
 これも表を縦向きに足す操作ですが、入力の値を保持せずに進んでいきます。$j$番目生徒の点数を足す操作を、教科数$m$回繰り返せば良いです。
 
+* python解
+
+  ~~~python
+  while True:
+      n,m = map(int, input().split())
+      if(n+m  ==0):
+          break
+      li = list()
+      for i in range(m):
+          line = [num for num in map(int, input().split())]
+          li.append(line)
+      ans = [0 for i in range(n)]
+      for i in range(m):
+          for j in range(n):
+              ans[j] += li[i][j]
+      print(max(ans))
+  ~~~
+
+  
+
 計算量は、データセット数を$d$とすれば$O(nmd)=O(5000000)=O(5*10^6)$で、十分間に合います。
 
 <hr>
@@ -104,9 +122,9 @@ int main(){
 
 まずはじめに、**マンハッタン距離**を紹介します。マンハッタン距離は、縦か横しか進めない場合に、マス目をいくつ使って行くことができるか、という距離です。普段我々が言うところの距離は**ユーグリッド距離**で、また別物です。
 
-ユーグリッド距離：$\sqrt{2^2+3^2}=\sqrt{13}$![Untitled Diagram-32](/Users/gotoutakumi/Desktop/git/icpc2019/gotou/images/Untitled Diagram-32.png)
+ユーグリッド距離：$\sqrt{2^2+3^2}=\sqrt{13}$![Untitled Diagram-32](images/Untitled Diagram-32.png)
 
-マンハッタン距離：$2+3=5$![Untitled Diagram-33](/Users/gotoutakumi/Desktop/git/icpc2019/gotou/images/Untitled Diagram-33.png)
+マンハッタン距離：$2+3=5$![Untitled Diagram-33](images/Untitled Diagram-33.png)
 
  今回使うのはマンハッタン距離です。
 
@@ -178,12 +196,15 @@ int main(){
       for t in target:
           next = d[t]
           ans += abs(now[0]-next[0]) + abs(now[1]-next[1])
-          now=next
+          now = next
       print(ans + len(target))
   ~~~
 
 計算量はデータセット数を$d$とすると$O(d(hw+|s|))=O(250000)=O(2.5*10^5)$で、十分間に合います。
 
->C++のmapは、内部的には2分木で作られているので、一応計算量にlogをつけるべきなのですが、文字種が高々69しかないことを考えれば無に等しいので、考えません。
+>C++のmapは内部的には2分木で作られているので、一応計算量にlogをつけるべきなのですが、文字種が高々69しかないことを考えれば無に等しいので、考えません。
 >
 >pythonのdict()はハッシュで作られているので、そもそも何も考えなくて良いでしょう。
+
+<hr>
+
