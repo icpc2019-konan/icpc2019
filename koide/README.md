@@ -274,9 +274,10 @@ while True:
         break
     # print(n, m)
 
-    a = set(map(int, input().split()))
-    w = list(map(int, input().split()))
+    a = set(map(int, input().split()))      # 測定したい重さ
+    w = list(map(int, input().split()))     # 分銅の重さ
     # print('a =', a)
+    # print('w =', w)
 
     # w で測定可能な重さ集合を作成
     possibles = {0}
@@ -292,37 +293,33 @@ while True:
     # 測定可能な重さを a から除去する
     a -= possibles
     if len(a) == 0:
-        print(0)
+        print(0)       # aのすべてがwで測定可能
         continue
     # print('left a =', a)
 
-    # 測定不可能な重さを1つ獲得
-    left_a0 = list(a)[0]
+    # 現時点で測定できない重さを測るために，1つ追加する重さの候補集合
+    add_w = {}
 
-    # 測定可能な値ごとに，追加する分銅の重さを設定して，全て測定可能か確認
-    min_add_w = 10**9
-    for e_possibles in possibles:
-        add_w = e_possibles + left_a0       # ケース1
-        if add_w < min_add_w:
-            # add_w の分銅を追加して，すべての a を実現できるか確認
-            for e_a in a:
-                if e_a + add_w not in possibles and abs(e_a - add_w) not in possibles:
-                    break
-            else:
-                min_add_w = add_w
+    # 測定できない各重さを測定できるように，追加する1つの重さの候補を順に絞る
+    for e_a in a:   # 1つの重さ e_a に注目
+        add_w_for_e_a = {e_a}     # e_aを測定するために，追加する1つの重さの候補集合
+        for e_possibles in possibles:
+            add_w_for_e_a.add(e_a + e_possibles)        # ケース1
+            add_w_for_e_a.add(abs(e_a - e_possibles))   # ケース2
 
-        add_w = abs(e_possibles - left_a0)  # ケース2
-        if add_w < min_add_w:
-            # add_w の分銅を追加して，すべての a を実現できるか確認
-            for e_a in a:
-                if e_a + add_w not in possibles and abs(e_a - add_w) not in possibles:
-                    break
-            else:
-                min_add_w = add_w
-    if min_add_w < 10**9:
-        print(min_add_w)
-    else:
+        if len(add_w) == 0:
+            # e_aが最初の候補のとき　⇒　e_a用の候補が調査済み全重さに対する候補
+            add_w = add_w_for_e_a
+        else:
+            # e_aが2番目以降の候補のとき　⇒　e_a用候補との積集合に絞る
+            add_w &= add_w_for_e_a
+            if len(add_w) == 0:
+                break           # 調査済みのすべてを測定可能な重さがなければ，調査終了
+
+    if len(add_w) == 0:         # 全て測定可能な重さがない
         print(-1)
+    else:
+        print(min(list(add_w)))
 ```
 
 # 問題D：計数カウンタ
