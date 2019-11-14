@@ -403,34 +403,41 @@ while True:
     a = list(map(int, input().split()))
     b = list(map(int, input().split()))
 
-    # 最低限必要な押す回数
+    # ボタン i を b[i] にするために最低限必要な押す回数
     c0 = [ b[i] - a[i] if b[i] >= a[i] else b[i] - a[i] + m for i in range(n)]
     # print('c0 =', c0)
+    if sum(c0) == 0:    #既に達成
+        print(0)
+        continue
 
-    # ボタン i を押す回数（k周余分に押す）を表す2次元リスト c[i][k] を作成
+    # ボタン i を（k周余分に）押す回数を表す2次元リスト c[i][k] を作成
     c = [ [ c0[i] + k * m for k in range(n) ] for i in range(n) ]
     # print('c =', c)
 
-    # ボタン i を c[i][k] 押すとき，ボタン i とその前のボタンを目標値にする最低回数 d[i][k]
-    d = [ [0] * n for i in range(n)]   # リスト枠作成
-    for j in range(n):
-        d[0][j] = c[0][j]
+    # ボタン i を c[i][k]回押して，ボタン i とその前のボタンを目標値 b にする最低回数 d[i][k]
+    d = [ [None] * n for i in range(n)]   # リスト枠作成
+    d[0][0] = c[0][0]       # 一番前のボタンの設定
+    max_k = [( (n-1) - abs(2 * i - (n-1)) ) // 2 for i in range(n)]
 
     # DPで構築
-    for i in range(1, n):
-        for j in range(n):
+    for i in range(1, n):       # 前から2番目以降，順次作成
+        for k in range(max_k[i] + 1):      # d[i][k]を計算
             d_kouho = []
-            for jj in range(n):
-                # ボタンを押す回数の方が前のボタン少ないとき → 前のボタンと同時押しで対応可能
-                if c[i][j] <= c[i-1][jj]:
-                    d_kouho.append(d[i-1][jj])
+            for kk in range(n): # 一つ前の i-1 番目のボタンに対する c[i-1][kk], d[i-1][kk]を参照
+                if d[i-1][kk] is None:
+                    break       # 前のボタンをこれ以上調べる必要なし
+                # ボタンを押す回数の方が前のボタンより少ないとき → 前のボタンと同時押しで対応可能
+                if c[i][k] <= c[i-1][kk]:
+                    d_kouho.append(d[i-1][kk])
                     break   # 前のボタンをもう一周させても，数が増えるだけなのでチェック不要
-                # ボタンを押す回数の方が前のボタン多いとき → 前のボタンと同時押し＋不足分を押す
+                # ボタンを押す回数の方が前のボタンより多いとき → 前のボタンと同時押し＋不足分を押す
                 else:
-                    d_kouho.append(d[i-1][jj] + c[i][j] - c[i-1][jj])
-            d[i][j] = min(d_kouho)
+                    d_kouho.append(d[i-1][kk] + c[i][k] - c[i-1][kk])
+            d[i][k] = min(d_kouho)
+            if k > 0 and d[i][k] == d[i][k-1] + m:   # 求まった回数が，単純に一周分多いとき → これ以降は不要
+                d[i][k] = None
+                break
     #print('d =', d)
-
-    print(min(d[n-1]))
+    print(min(e for e in d[n-1] if e is not None))
 
 ```
