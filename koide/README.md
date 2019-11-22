@@ -540,3 +540,51 @@ while True:
 ```
 
 上で記した処理に加え，計算時間短縮のための工夫を施していますが，AOJでは実行時間オーバーになってしまいます．．．（正答を出力はできているようです）
+
+## 追記（2019/11/22） 
+
+d[i][k] = min(d_kouho) としているが，実際に最小になるのは2パターンしかないことに注目する．
+- c[i-1][k] < c[i][k] のとき，c[i-1][k] < c[i][k] < c[i-1][k+1]なので，kk = k, k+1
+- c[i-1][k] > c[i][k] のとき，c[i-1][k-1] < c[i][k] < c[i-1][k]なので，kk = k-1, k
+これによって，kkに関するループの回数を減らすことが可能（AOJでもクリアできます）．
+
+```python
+while True:
+
+    n, m = list(map(int, input().split()))
+    if m == 0 and n == 0:
+        break
+
+    a = list(map(int, input().split()))
+    b = list(map(int, input().split()))
+
+    # ボタン i を b[i] にするために最低限必要な押す回数
+    c0 = [ (bi - ai) % m for ai, bi in zip(a, b)]
+    # print('c0 =', c0)
+
+    # ボタン i を（k周余分に）押す回数を表す2次元リスト c[i][k] を作成
+    max_k = (n - 1) // 2
+    c = [ [ c0[i] + k * m for k in range(max_k + 1) ] for i in range(n) ]
+    # print('c =', c)
+
+    # ボタン i を c[i][k]回押して，ボタン i とその前のボタンを目標値 b にする最低回数 d[i][k]
+    d = [ [0] * (max_k + 1) for i in range(n)]   # リスト枠作成
+    d[0] = c[0]       # 一番前のボタンの設定
+
+    # DPで構築
+    for i in range(1, n):       # 前から2番目以降，順次作成
+        if c[i-1][0] > c[i][0]:     # 左の方が小さい場合
+            d[i][0] = d[i-1][0]
+            for k in range(1, max_k + 1):
+                d[i][k] = min(d[i-1][k], d[i-1][k-1] + c[i][k] - c[i-1][k-1])
+        else:                       # 左の方が大きい場合
+            for k in range(max_k):
+                d[i][k] = min(d[i-1][k+1], d[i-1][k] + c[i][k] - c[i-1][k])
+            d[i][max_k] = d[i-1][max_k] + c[i][max_k] - c[i-1][max_k]
+
+    #print('d =', d)
+    print(min(d[n-1]))
+
+```
+
+
